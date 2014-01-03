@@ -1,0 +1,58 @@
+# Makefile.in -- input for rep-gtk Makefile
+# Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
+# $Id: Makefile.in,v 1.1.1.1 2001/11/22 08:07:31 jsh Exp $
+
+SRCS = rep-fec.c fec.c
+OBJS = $(SRCS:.c=.lo)
+
+OUT = vandermonde.la
+
+version=@version@
+host_type=@host@
+SHELL=/bin/sh
+
+repexecdir=@REP_EXECDIR@
+include $(repexecdir)/rules.mk
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+override CPPFLAGS += -DHAVE_CONFIG_H -I.
+override CFLAGS += @REP_CFLAGS@
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+
+DESTDIR=
+installdir=$(repexecdir)
+
+top_srcdir=@top_srcdir@
+top_builddir=.
+VPATH=@top_srcdir@:.
+
+.PHONY: clean realclean install
+
+all : $(OUT)
+
+$(OUT) : $(OBJS)
+	$(rep_DL_LD) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+install : all installdirs
+	$(rep_DL_INSTALL) $(OUT) $(DESTDIR)$(installdir)/$(OUT)
+
+installdirs : $(top_srcdir)/mkinstalldirs
+	$(SHELL) $(top_srcdir)/mkinstalldirs $(DESTDIR)$(installdir)
+
+uninstall :
+	$(rep_DL_UNINSTALL) $(DESTDIR)$(installdir)/$(OUT)
+
+clean :
+	rm -f *~ core *.jlc *.o *.lo *.la
+
+realclean : clean
+	rm -f Makefile config.cache config.log config.status config.h
+
+cvsclean : realclean
+	rm -f aclocal.m4 configure

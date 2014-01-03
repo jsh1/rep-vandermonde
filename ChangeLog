@@ -1,0 +1,7 @@
+2001-11-25  John Harper  <jsh@unfactored.org>
+
+	* rep-fec.c (vandermonde-decode-file): new argument,
+	EXTRA-BYTES. The number of pad bytes inserted at the end of the
+	last block when encoding. It now removes these bytes after
+	decoding
+
